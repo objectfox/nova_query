@@ -28,3 +28,8 @@ Some example commands:
 	Create a new server named 'Server 1':
 	nova_query.pl /servers.xml /
 "{\"server\": {\"name\": \"Server 1\", \"imageRef\": 1, \"flavorRef\": 1}}"
+
+Notes:
+
+	NOVA_API_KEY, NOVA_USERNAME, NOVA_PROJECT_ID and NOVA_URL environment
+	variables must be set.
