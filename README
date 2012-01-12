@@ -1,0 +1,30 @@
+nova_query.pl
+-------------
+
+nova_query is a simple script that takes care of the passing of
+OpenStack auth credentials for you so you can query the Nova API
+without typing long curl commands.  Under the covers it just wraps
+curl, so you'll need it installed.
+
+nova_query is particularly useful for examining the raw output of
+the Nova OpenStack API without any intermediary output alteration.
+
+Options:
+
+	-p pretty print json output through 'python -mjson.tool'
+
+Some example commands:
+
+	Get a list of servers:
+	nova_query.pl /servers.xml
+	nova_query.pl /servers.json
+	
+	Show a specific server's details:
+	nova_query.pl /servers/1234.xml
+
+	Show only images named uec-natty pretty-printed:
+	nova_query.pl -p /images.json?name=uec-natty
+
+	Create a new server named 'Server 1':
+	nova_query.pl /servers.xml /
+"{\"server\": {\"name\": \"Server 1\", \"imageRef\": 1, \"flavorRef\": 1}}"
