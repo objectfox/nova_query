@@ -20,8 +20,7 @@ if ($ENV{'NOVA_USERNAME'}) {
 
 if ($ENV{'NOVA_PROJECT_ID'}) {
 	$NOVA_PROJECT_ID = $ENV{'NOVA_PROJECT_ID'};
-} else {
-	die "NOVA_PROJECT_ID environment variable must be set.";
+	$nova_project = "-H \"X-Auth-Project-Id: $NOVA_PROJECT_ID\"";
 };
 
 if ($ENV{'NOVA_URL'}) {
@@ -35,14 +34,15 @@ $auth = `curl -s -D - -H "X-Auth-Key: $NOVA_API_KEY" -H "X-Auth-User: $NOVA_USER
 
 if ($auth =~ /X-Auth-Token: ([^\n]*)/) {
 	$token = $1;
+	$token =~ s/[^a-zA-Z0-9\-\_]//g;
 } else {
-	die "No Auth Token returned.";
+	die "Error: No Auth Token returned.\nDetails:\n$auth";
 };
 
 if ($auth =~ /X-Server-Management-Url: ([^\n\r]*)/) {
 	$mgturl = $1;
 } else {
-	die "No Server Management Url returned.";
+	die "Error: No Server Management Url returned.\nDetails:\n$auth";
 };
 
 foreach $arg (@ARGV) {
@@ -60,9 +60,9 @@ if ($post) {
 # If we have a second argument, it's a POST value.
 
 	if ($pretty) {
-		$resp = `curl -s -H "X-Auth-Token: $token" -H "X-Auth-User: $NOVA_USERNAME"  -H "X-Auth-Project-Id: $NOVA_PROJECT_ID" -H "Content-type: application/json" -d '$post' "$mgturl$url" 2>&1 | python -mjson.tool`;
+		$resp = `curl -s -H "X-Auth-Token: $token" $nova_project -H "X-Auth-User: $NOVA_USERNAME" -H "Content-type: application/json" -d '$post' "$mgturl$url" 2>&1 | python -mjson.tool`;
 	} else {
-		$resp = `curl -s -H "X-Auth-Token: $token" -H "X-Auth-User: $NOVA_USERNAME"  -H "X-Auth-Project-Id: $NOVA_PROJECT_ID" -H "Content-type: application/json" -d '$post' "$mgturl$url" 2>&1`;
+		$resp = `curl -s -H "X-Auth-Token: $token" $nova_project -H "X-Auth-User: $NOVA_USERNAME" -H "Content-type: application/json" -d '$post' "$mgturl$url" 2>&1`;
 	};
 
 } else {
@@ -70,9 +70,9 @@ if ($post) {
 # No second argument, it's a GET.
 
 	if ($pretty) {
-		$resp = `curl -s -H "X-Auth-Token: $token" -H "X-Auth-User: $NOVA_USERNAME"  -H "X-Auth-Project-Id: $NOVA_PROJECT_ID" "$mgturl$url" 2>&1 | python -mjson.tool`;
+		$resp = `curl -s -H "X-Auth-Token: $token" $nova_project -H "X-Auth-User: $NOVA_USERNAME" "$mgturl$url" 2>&1 | python -mjson.tool`;
 	} else {
-		$resp = `curl -s -H "X-Auth-Token: $token" -H "X-Auth-User: $NOVA_USERNAME"  -H "X-Auth-Project-Id: $NOVA_PROJECT_ID" "$mgturl$url" 2>&1`;
+		$resp = `curl -s -H "X-Auth-Token: $token" $nova_project -H "X-Auth-User: $NOVA_USERNAME" "$mgturl$url" 2>&1`;
 	};
 };
 
