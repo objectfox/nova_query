@@ -1,35 +1,40 @@
-nova_query.pl
--------------
+nova_query.pl & nova_query.py
+-----------------------------
 
 nova_query is a simple script that takes care of the passing of
 OpenStack auth credentials for you so you can query the Nova API
-without typing long curl commands.  Under the covers it just wraps
-curl, so you'll need it installed.
+without typing long curl commands.
 
 nova_query is particularly useful for examining the raw output of
 the Nova OpenStack API without any intermediary output alteration.
 
-Options:
+The perl version is depreciated, but remains for reference.  The
+python version is keystone aware.
 
-	-p pretty print json output through 'python -mjson.tool'
-
-Some example commands:
-
+examples:
 	Get a list of servers:
-	nova_query.pl /servers.xml
-	nova_query.pl /servers.json
+	nova_query.py /servers.json
 	
 	Show a specific server's details:
-	nova_query.pl /servers/1234.xml
-
+	nova_query.py /servers/1234.xml
+	
 	Show only images named uec-natty pretty-printed:
-	nova_query.pl -p /images.json?name=uec-natty
+	nova_query.py -p /images.json?name=uec-natty
+	
+	Delete a keypair named 'mykeypair':
+	nova_query.py -m DELETE /os-keypairs/mykeypair
 
 	Create a new server named 'Server 1':
-	nova_query.pl /servers.xml /
-"{\"server\": {\"name\": \"Server 1\", \"imageRef\": 1, \"flavorRef\": 1}}"
+	nova_query.pl -d "{\\"server\\": {\\"name\\": \\"Server 1\\", \\ 
+	\\"imageRef\\": 1, \\"flavorRef\\": 1}}" /servers.xml
 
-Notes:
+	Pipe post data in on stdin:
+	cat mykeypair.json | nova_query.py -i /os-keypairs
 
-	NOVA_API_KEY, NOVA_USERNAME, NOVA_PROJECT_ID and NOVA_URL environment
-	variables must be set.
+notes:
+  For v1.1 Nova Auth clusters NOVA_API_KEY, NOVA_USERNAME, NOVA_PROJECT_ID
+  and NOVA_URL environment variables must be set
+
+  For v2.0 Keystone Auth clusters NOVA_USERNAME and NOVA_PASSWORD or
+  NOVA_ACCESSKEY and NOVA_SECRETKEY must be set, as well as NOVA_TENANT_ID,
+  NOVA_IDENTITY_URL and NOVA_URL.
