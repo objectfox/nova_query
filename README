@@ -1,5 +1,5 @@
-nova_query.pl & nova_query.py
------------------------------
+nova_query.py
+-------------
 
 nova_query is a simple script that takes care of the passing of
 OpenStack auth credentials for you so you can query the Nova API
