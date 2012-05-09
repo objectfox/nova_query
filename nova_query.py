@@ -184,8 +184,8 @@ examples:
 	nova_query.py -m DELETE /os-keypairs/mykeypair
 
 	Create a new server named 'Server 1':
-	nova_query.pl -d "{\\"server\\": {\\"name\\": \\"Server 1\\", \\ 
-	\\"imageRef\\": 1, \\"flavorRef\\": 1}}" /servers.xml
+	nova_query.pl -d '{"server": {"name": "Server 1", \\ 
+	"imageRef": 1, "flavorRef": 1}}' /servers.xml
 
 	Pipe post data in on stdin:
 	cat mykeypair.json | nova_query.py -i /os-keypairs
